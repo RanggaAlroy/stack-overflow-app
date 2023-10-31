@@ -5,6 +5,7 @@ import Link from 'next/link';
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { Button } from '../ui/button';
+import { SignedOut } from '@clerk/nextjs';
 
 const LeftSideBar = () => {
   const pathName = usePathname();
@@ -45,30 +46,34 @@ const LeftSideBar = () => {
         })}
       </div>
       <div className="flex flex-col gap-3">
-        <Link href="/sign-in">
-          <Button className="btn-secondary small-medium text-dark400_light900 min-h-[42px] w-full px-4 py-3">
-            <Image
-              src={'/assets/icons/account.svg'}
-              alt="Sign In"
-              width={20}
-              height={20}
-              className="invert-colors md:hidden"
-            />
-            <span className="primary-text-gradient max-md:hidden">Sign In</span>
-          </Button>
-        </Link>
-        <Link href="/sign-in">
-          <Button className="btn-tertiary small-medium text-dark400_light900 min-h-[42px] w-full px-4 py-3">
-            <Image
-              src={'/assets/icons/sign-up.svg'}
-              alt="Sign up"
-              width={20}
-              height={20}
-              className="invert-colors md:hidden"
-            />
-            <span className="max-md:hidden">Sign In</span>
-          </Button>
-        </Link>
+        <SignedOut>
+          <Link href="/sign-in">
+            <Button className="btn-secondary small-medium text-dark400_light900 min-h-[42px] w-full px-4 py-3">
+              <Image
+                src={'/assets/icons/account.svg'}
+                alt="Sign In"
+                width={20}
+                height={20}
+                className="invert-colors md:hidden"
+              />
+              <span className="primary-text-gradient max-md:hidden">
+                Sign In
+              </span>
+            </Button>
+          </Link>
+          <Link href="/sign-in">
+            <Button className="btn-tertiary small-medium text-dark400_light900 min-h-[42px] w-full px-4 py-3">
+              <Image
+                src={'/assets/icons/sign-up.svg'}
+                alt="Sign up"
+                width={20}
+                height={20}
+                className="invert-colors md:hidden"
+              />
+              <span className="max-md:hidden">Sign In</span>
+            </Button>
+          </Link>
+        </SignedOut>
       </div>
     </section>
   );

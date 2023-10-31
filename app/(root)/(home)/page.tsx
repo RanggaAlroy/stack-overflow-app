@@ -6,6 +6,57 @@ import LokalSearch from '@/components/shared/search/LokalSearch';
 import HomePageFilter from '@/components/home/HomePageFilter';
 import { HomePageFilters } from '@/constants/filters';
 import Filter from '@/components/shared/Filter';
+import NoResultFound from '@/components/shared/NoResultFound';
+import QuestionCard from '@/components/shared/cards/QuestionCard';
+
+const Questions = [
+  {
+    _id: '1',
+    title: 'What is the best way to learn Python?',
+    tags: [
+      {
+        _id: '1',
+        name: 'python',
+      },
+      {
+        _id: '2',
+        name: 'Next js',
+      },
+    ],
+    author: {
+      _id: '1',
+      name: 'John Doe',
+      picture: 'https://example.com/john-doe.png',
+    },
+    upvotes: 10,
+    views: 1000000,
+    answers: [],
+    createdAt: new Date('2023-10-30T13:00:00.000Z'),
+  },
+  {
+    _id: '2',
+    title: 'What is the difference between a list and a tuple in Python?',
+    tags: [
+      {
+        _id: '1',
+        name: 'python',
+      },
+      {
+        _id: '3',
+        name: 'CSS',
+      },
+    ],
+    author: {
+      _id: '2',
+      name: 'Jane Doe',
+      picture: 'https://example.com/jane-doe.png',
+    },
+    upvotes: 20,
+    views: 2200000,
+    answers: [],
+    createdAt: new Date('2023-10-30T13:00:00.000Z'),
+  },
+];
 
 export default function Home() {
   return (
@@ -32,6 +83,31 @@ export default function Home() {
           />
         </div>
         <HomePageFilter />
+
+        <div className="mt-10 flex w-full flex-col gap-3">
+          {Questions.length > 0 ? (
+            Questions.map(item => (
+              <QuestionCard
+                key={item._id}
+                _id={item._id}
+                title={item.title}
+                tags={item.tags}
+                author={item.author}
+                upvotes={item.upvotes}
+                views={item.views}
+                answers={item.answers}
+                createdAt={item.createdAt}
+              />
+            ))
+          ) : (
+            <NoResultFound
+              title="There is no question to show"
+              description="Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion."
+              link="/ask-question"
+              linkTitle="Ask a Question"
+            />
+          )}
+        </div>
       </div>
     </>
   );

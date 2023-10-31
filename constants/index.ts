@@ -58,27 +58,27 @@ export const TopQuestions = [
 
 export const TopTags = [
   {
-    _id: 1,
+    _id: '1',
     name: 'React js',
     tatalQuestions: 5
   },
   {
-    _id: 2,
+    _id: '2',
     name: 'javascript',
     tatalQuestions: 5
   },
   {
-    _id: 3,
+    _id: '3',
     name: 'Next js',
     tatalQuestions: 5
   },
   {
-    _id: 4,
+    _id: '4',
     name: 'Angular',
     tatalQuestions: 5
   },
   {
-    _id: 5,
+    _id: '5',
     name: 'HTML',
     tatalQuestions: 5
   },
