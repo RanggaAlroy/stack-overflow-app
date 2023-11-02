@@ -3,7 +3,7 @@ import React from 'react';
 import RenderTag from '../RenderTag';
 import Link from 'next/link';
 import Metric from '../Metric';
-import getTimeStamp from '@/lib/DistanceDate';
+import getTimeStamp from '@/lib/distanceDate';
 import { formatNumber } from '@/lib/utils';
 
 interface QuestionProps {
