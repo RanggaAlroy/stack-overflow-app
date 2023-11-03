@@ -20,6 +20,7 @@ import { QuestionsSchema } from '@/lib/validattions';
 import { Editor } from '@tinymce/tinymce-react';
 import { Badge } from '../ui/badge';
 import Image from 'next/image';
+import { CreateQuestion } from '@/lib/actions/question.action';
 
 const type: any = 'create';
 
@@ -37,14 +38,18 @@ const Question = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof QuestionsSchema>) {
+  async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
     setIsSubmitting(true);
 
     try {
       // mak an async call to the server API
       // contain all from data
       // navigate to home page
-    } catch (error) {}
+      await CreateQuestion({});
+    } catch (error) {
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   // handle input key down for tags
@@ -124,15 +129,16 @@ const Question = () => {
               </FormLabel>
               <FormControl className="mt-3.5">
                 <Editor
-                  apiKey="ch87k9hya9eijzyalr0zucw0sdpeyc1z5shf1mu25g2qhzvv"
+                  apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                   onInit={(evt, editor) => {
                     // @ts-ignore
                     editorRef.current = editor;
                   }}
+                  onBlur={field.onBlur}
                   onEditorChange={content => field.onChange(content)}
                   initialValue=""
                   init={{
-                    height: 500,
+                    height: 350,
                     menubar: false,
                     plugins: [
                       'advlist',
@@ -153,12 +159,10 @@ const Question = () => {
                     ],
                     toolbar:
                       'undo redo | ' +
-                      'blocks | codesample | bold italic forecolor | ' +
-                      'alignleft aligncenter alignright alignjustify | ' +
-                      'bullist numlist outdent indent | ',
+                      'codesample | bold italic forecolor | alignleft aligncenter |' +
+                      'alignright alignjustify | bullist numlist',
                     content_style: 'body { font-family:Inter; font-size:16px }',
                   }}
-                  {...field}
                 />
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-[0.8rem] text-light-500 dark:text-slate-400">
