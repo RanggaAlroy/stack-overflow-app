@@ -1,7 +1,5 @@
 'use client';
-import React, { useRef, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -15,18 +13,26 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-
+import { useForm } from 'react-hook-form';
 import { QuestionsSchema } from '@/lib/validattions';
+import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { Badge } from '../ui/badge';
 import Image from 'next/image';
-import { CreateQuestion } from '@/lib/actions/question.action';
+import { createQuestion } from '@/lib/actions/question.action';
+import { useRouter, usePathname } from 'next/navigation';
 
 const type: any = 'create';
 
-const Question = () => {
+interface Props {
+  mongoUserId: string;
+}
+
+const Question = ({ mongoUserId }: Props) => {
   const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
   // 1. Define your form.
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
@@ -42,17 +48,24 @@ const Question = () => {
     setIsSubmitting(true);
 
     try {
-      // mak an async call to the server API
-      // contain all from data
+      // 1. Make an async call to your API -> create a question
+      // contains all from data
+      await createQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        author: JSON.parse(mongoUserId),
+        path: pathname,
+      });
+
       // navigate to home page
-      await CreateQuestion({});
+      router.push('/');
     } catch (error) {
     } finally {
       setIsSubmitting(false);
     }
   }
 
-  // handle input key down for tags
   const handleInputKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     field: any,
@@ -73,10 +86,7 @@ const Question = () => {
         if (!field.value.includes(tagValue as never)) {
           form.setValue('tags', [...field.value, tagValue]);
           tagInput.value = '';
-          form.clearErrors('tags');
         }
-      } else {
-        form.trigger();
       }
     }
   };
@@ -129,7 +139,7 @@ const Question = () => {
               </FormLabel>
               <FormControl className="mt-3.5">
                 <Editor
-                  apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
+                  apiKey={'vbwb31bapm6pm2cjg5zywg9rq45myxnb47ppuz665zo8hmep'}
                   onInit={(evt, editor) => {
                     // @ts-ignore
                     editorRef.current = editor;
