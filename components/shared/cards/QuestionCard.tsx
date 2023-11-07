@@ -3,8 +3,16 @@ import React from 'react';
 import RenderTag from '../RenderTag';
 import Link from 'next/link';
 import Metric from '../Metric';
-import getTimeStamp from '@/lib/distanceDate';
 import { formatNumber } from '@/lib/utils';
+import { formatDistanceToNow } from 'date-fns';
+
+const getTimeStamp = (date: Date): string => {
+  const distance = formatDistanceToNow(date, {
+    addSuffix: true,
+    includeSeconds: false,
+  });
+  return distance;
+};
 
 interface QuestionProps {
   _id: string;
