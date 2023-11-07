@@ -8,57 +8,11 @@ import { HomePageFilters } from '@/constants/filters';
 import Filter from '@/components/shared/Filter';
 import NoResultFound from '@/components/shared/NoResultFound';
 import QuestionCard from '@/components/shared/cards/QuestionCard';
+import { getQuestions } from '@/lib/actions/question.action';
 
-const Questions = [
-  {
-    _id: '1',
-    title: 'What is the best way to learn Python?',
-    tags: [
-      {
-        _id: '1',
-        name: 'python',
-      },
-      {
-        _id: '2',
-        name: 'Next js',
-      },
-    ],
-    author: {
-      _id: '1',
-      name: 'John Doe',
-      picture: 'https://example.com/john-doe.png',
-    },
-    upvotes: 10,
-    views: 1000000,
-    answers: [],
-    createdAt: new Date('2023-10-30T13:00:00.000Z'),
-  },
-  {
-    _id: '2',
-    title: 'What is the difference between a list and a tuple in Python?',
-    tags: [
-      {
-        _id: '1',
-        name: 'python',
-      },
-      {
-        _id: '3',
-        name: 'CSS',
-      },
-    ],
-    author: {
-      _id: '2',
-      name: 'Jane Doe',
-      picture: 'https://example.com/jane-doe.png',
-    },
-    upvotes: 20,
-    views: 2200000,
-    answers: [],
-    createdAt: new Date('2023-10-30T13:00:00.000Z'),
-  },
-];
+export default async function Home() {
+  const result = await getQuestions({});
 
-export default function Home() {
   return (
     <>
       <div className="flex flex-col">
@@ -85,8 +39,8 @@ export default function Home() {
         <HomePageFilter />
 
         <div className="mt-10 flex w-full flex-col gap-3">
-          {Questions.length > 0 ? (
-            Questions.map(item => (
+          {result.questions.length > 0 ? (
+            result.questions.map(item => (
               <QuestionCard
                 key={item._id}
                 _id={item._id}

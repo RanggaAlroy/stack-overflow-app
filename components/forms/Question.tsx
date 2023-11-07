@@ -53,9 +53,9 @@ const Question = ({ mongoUserId }: Props) => {
       await createQuestion({
         title: values.title,
         content: values.explanation,
-        tags: values.tags,
         author: JSON.parse(mongoUserId),
         path: pathname,
+        tags: [],
       });
 
       // navigate to home page
@@ -80,13 +80,17 @@ const Question = ({ mongoUserId }: Props) => {
         if (tagValue.length > 15) {
           return form.setError('tags', {
             type: 'required',
-            message: 'Tag must be less than 15 characters',
+            message: 'Tag must be less than 15 characters.',
           });
         }
+
         if (!field.value.includes(tagValue as never)) {
           form.setValue('tags', [...field.value, tagValue]);
           tagInput.value = '';
+          form.clearErrors('tags');
         }
+      } else {
+        form.trigger();
       }
     }
   };
@@ -190,11 +194,12 @@ const Question = ({ mongoUserId }: Props) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                Tags<span className="text-primary-500">*</span>
+                Tags<span className="text-primary-500"> *</span>
               </FormLabel>
               <FormControl className="mt-3.5">
                 <>
                   <Input
+                    disabled={type === 'Edit'}
                     placeholder="Add tags..."
                     className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700"
                     onKeyDown={e => handleInputKeyDown(e, field)}
@@ -204,17 +209,23 @@ const Question = ({ mongoUserId }: Props) => {
                       {field.value.map((tag: any) => (
                         <Badge
                           key={tag}
-                          className="subtle-medium background-light800_dark300 text-light400_light500 flex items-center justify-center gap-2.5 rounded-md border-none px-4 py-2 uppercase"
+                          className="subtle-medium background-light800_dark300 text-light400_light500 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 uppercase"
+                          onClick={() =>
+                            type !== 'Edit'
+                              ? handleTagRemove(tag, field)
+                              : () => {}
+                          }
                         >
                           {tag}
-                          <Image
-                            src="/assets/icons/close.svg"
-                            alt="close icon"
-                            width={12}
-                            height={12}
-                            className="cursor-pointer object-contain invert-0 dark:invert"
-                            onClick={() => handleTagRemove(tag, field)}
-                          />
+                          {type !== 'Edit' && (
+                            <Image
+                              src="/assets/icons/close.svg"
+                              alt="Close icon"
+                              width={12}
+                              height={12}
+                              className="cursor-pointer object-contain invert-0 dark:invert"
+                            />
+                          )}
                         </Badge>
                       ))}
                     </div>
