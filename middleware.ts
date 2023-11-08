@@ -3,7 +3,6 @@ export default authMiddleware({
   // "/" will be accessible to all users
   publicRoutes: [
   "/",
-  "/api/webhook",
   "/questions/:id",
   "/tags",
   "/tags/:id",
@@ -13,7 +12,7 @@ export default authMiddleware({
   ],
   
   ignoredRoutes: [
-    "/api/webhook", "/api/chatgpt"
+    "/api/chatgpt"
   ],
 });
  
