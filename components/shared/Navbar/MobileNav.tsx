@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { usePathname } from 'next/navigation';
-import { SideBarLinks } from '@/constants';
+import { sidebarLinks } from '@/constants';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -19,7 +19,7 @@ const NavContent = () => {
   const pathName = usePathname();
   return (
     <section className="flex flex-col gap-6 pt-16">
-      {SideBarLinks.map(item => {
+      {sidebarLinks.map(item => {
         const isActive =
           (pathName.includes(item.route) && item.route.length > 1) ||
           pathName === item.route;

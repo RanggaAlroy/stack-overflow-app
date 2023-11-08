@@ -1,5 +1,5 @@
 'use client';
-import { SideBarLinks } from '@/constants';
+import { sidebarLinks } from '@/constants';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -12,7 +12,7 @@ const LeftSideBar = () => {
   return (
     <section className="background-light900_dark200 sticky left-0 top-0 flex h-screen w-fit max-w-[360px] flex-col items-stretch justify-between border-r p-6 pt-36 shadow-light-300 dark:border-none dark:shadow-none max-sm:hidden">
       <div className="flex flex-col gap-6">
-        {SideBarLinks.map(item => {
+        {sidebarLinks.map(item => {
           const isActive =
             (pathName.includes(item.route) && item.route.length > 1) ||
             pathName === item.route;
