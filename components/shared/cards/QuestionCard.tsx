@@ -3,16 +3,7 @@ import React from 'react';
 import RenderTag from '../RenderTag';
 import Link from 'next/link';
 import Metric from '../Metric';
-import { formatNumber } from '@/lib/utils';
-import { formatDistanceToNow } from 'date-fns';
-
-const getTimeStamp = (date: Date): string => {
-  const distance = formatDistanceToNow(date, {
-    addSuffix: true,
-    includeSeconds: false,
-  });
-  return distance;
-};
+import { formatNumber, getTimeStamp } from '@/lib/utils';
 
 interface QuestionProps {
   _id: string;
@@ -64,7 +55,7 @@ const QuestionCard = ({
       </div>
       <div className="flex-between mt-10 w-full flex-wrap gap-3">
         <Metric
-          imgURL="/assets/icons/avatar.svg"
+          imgURL={author.picture}
           alt="User"
           value={author.name}
           title={` - asked ${getTimeStamp(createdAt)}`}

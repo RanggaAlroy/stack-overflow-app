@@ -22,8 +22,14 @@ const Metric = ({
   isAuthor,
 }: MetricProps) => {
   const MetricContent = (
-    <div className="flex items-center gap-1">
-      <Image src={imgURL} alt={alt} width={16} height={16} />
+    <div className="flex items-center gap-2">
+      <Image
+        src={imgURL}
+        alt={alt}
+        width={20}
+        height={20}
+        className="rounded-full"
+      />
       <p className={`${textStyles} flex items-center gap-1`}>
         {value}{' '}
         <span
