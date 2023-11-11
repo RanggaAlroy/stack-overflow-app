@@ -4,6 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Metric from '@/components/shared/Metric';
 import { formatNumber, getTimeStamp } from '@/lib/utils';
+import ParseHTML from '@/components/shared/ParseHTML';
+import RenderTag from '@/components/shared/RenderTag';
+import Answer from '@/components/forms/Answer';
 
 const page = async ({ params, searchParams }) => {
   const result = await getQuestionById({ questionId: params.id });
@@ -33,7 +36,7 @@ const page = async ({ params, searchParams }) => {
           {result.title}
         </h2>
       </div>
-      <div className="flex-start mt-5 flex w-full items-center gap-4">
+      <div className="flex-start mb-8 mt-5 flex w-full items-center gap-4">
         <Metric
           imgURL="/assets/icons/clock.svg"
           alt="clock icon"
@@ -56,6 +59,21 @@ const page = async ({ params, searchParams }) => {
           textStyles="small-regular text-dark400_light800"
         />
       </div>
+
+      <ParseHTML data={result.content} />
+
+      <div className="mt-10 flex gap-2">
+        {result.tags.map((tag: any) => (
+          <RenderTag
+            _id={tag._id}
+            name={tag.name}
+            key={tag._id}
+            showCount={false}
+          />
+        ))}
+      </div>
+
+      <Answer />
     </>
   );
 };
