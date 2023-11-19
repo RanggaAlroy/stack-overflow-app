@@ -11,8 +11,9 @@ import { auth } from '@clerk/nextjs';
 import { getUserById } from '@/lib/actions/user.action';
 import AllAnswers from '@/components/shared/AllAnswers';
 import Voting from '@/components/shared/Voting';
+import { URLProps } from '@/types';
 
-const page = async ({ params, searchParams }) => {
+const page = async ({ params, searchParams }: URLProps) => {
   const result = await getQuestionById({ questionId: params.id });
   const { userId: clerkId } = auth();
 

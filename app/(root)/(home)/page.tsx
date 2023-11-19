@@ -1,5 +1,3 @@
-'use clients';
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import LokalSearch from '@/components/shared/search/LokalSearch';

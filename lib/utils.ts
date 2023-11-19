@@ -24,3 +24,19 @@ export function getTimeStamp(date: Date): string {
   });
   return distance;
 };
+
+export const getJoinedDate = (date: Date): string => {
+  // Check if the date is a valid Date object
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    return "";
+  }
+
+  // Extract the month and year from the Date object
+  const month = date.toLocaleString('default', { month: 'long' });
+  const year = date.getFullYear();
+
+  // Create the joined date string (e.g., "September 2023")
+  const joinedDate = `Joined ${month} ${year}`;
+
+  return joinedDate;
+};
