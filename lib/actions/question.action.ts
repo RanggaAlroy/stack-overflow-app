@@ -3,7 +3,7 @@
 import Question from "@/database/question.model";
 import Tag from "@/database/tag.model";
 import { connectToDatabase } from "../mongoose"
-import { CreateQuestionParams, GetQuestionByIdParams, GetQuestionsParams, GetSavedQuestionsParams, QuestionVoteParams } from "./shared.types";
+import { CreateQuestionParams, GetQuestionByIdParams, GetQuestionsByTagIdParams, GetQuestionsParams, QuestionVoteParams } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
 
@@ -42,7 +42,7 @@ export async function createQuestion(params: CreateQuestionParams) {
     for (const tag of tags) {
       const existingTag = await Tag.findOneAndUpdate(
         { name: { $regex: new RegExp(`^${tag}$`, "i") } }, 
-        { $setOnInsert: { name: tag }, $push: { question: question._id } },
+        { $setOnInsert: { name: tag }, $push: { questions: question._id } },
         { upsert: true, new: true }
       )
 
@@ -158,6 +158,4 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
   }
 
 }
-
-
 

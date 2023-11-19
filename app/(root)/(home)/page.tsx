@@ -9,6 +9,7 @@ import Filter from '@/components/shared/Filter';
 import NoResultFound from '@/components/shared/NoResultFound';
 import QuestionCard from '@/components/shared/cards/QuestionCard';
 import { getQuestions } from '@/lib/actions/question.action';
+import Link from 'next/link';
 
 export default async function Home() {
   const result = await getQuestions({});
@@ -18,9 +19,11 @@ export default async function Home() {
       <div className="flex flex-col">
         <div className="flex w-full flex-row items-center justify-between">
           <h2 className="h2-bold text-dark100_light900">All Question</h2>
-          <Button className="btn primary-gradient min-h-[46px] px-4 py-3 font-medium text-light-900 transition-colors">
-            Ask a Question
-          </Button>
+          <Link href="/ask-question">
+            <Button className="btn primary-gradient min-h-[46px] px-4 py-3 font-medium text-light-900 transition-colors">
+              Ask a Question
+            </Button>
+          </Link>
         </div>
         <div className="mt-11 flex justify-between gap-5 max-sm:flex-col">
           <LokalSearch
