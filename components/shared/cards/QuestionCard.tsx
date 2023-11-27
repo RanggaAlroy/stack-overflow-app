@@ -1,4 +1,3 @@
-'use clients';
 import React from 'react';
 import RenderTag from '../RenderTag';
 import Link from 'next/link';
@@ -21,6 +20,7 @@ interface QuestionProps {
   views: number;
   answers: Array<object>;
   createdAt: Date;
+  clerkId?: string;
 }
 
 const QuestionCard = ({
