@@ -18,13 +18,13 @@ const Page = async ({ params, searchParams }: URLProps) => {
   return (
     <>
       <div className="flex flex-col-reverse items-start justify-between sm:flex-row">
-        <div className="flex flex-col gap-4 lg:flex-row">
+        <div className="flex flex-col items-start gap-4 lg:flex-row">
           <Image
             src={userInfo?.user.picture}
-            alt="profile"
+            alt="profile picture"
             width={140}
             height={140}
-            className="rounded-full"
+            className="rounded-full object-cover"
           />
           <div className="mt-3">
             <h2 className="h2-bold text-dark100_light900">
@@ -34,7 +34,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
               @{userInfo.user.username}
             </p>
             <div className="mt-5 flex flex-wrap items-center justify-start gap-5">
-              {userInfo.user.portfolio && (
+              {userInfo.user.portfolioWebsite && (
                 <ProfileLink
                   imgURL="/assets/icons/link.svg"
                   href={userInfo.user.portfolioWebsite}
@@ -95,7 +95,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
               clerkId={clerkId}
             />
           </TabsContent>
-          <TabsContent value="answers">
+          <TabsContent value="answers" className="flex w-full flex-col gap-6">
             <AnswersTab
               searchParams={searchParams}
               userId={userInfo.user._id}
