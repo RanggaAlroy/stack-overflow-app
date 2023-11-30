@@ -1,6 +1,6 @@
 'use client';
 
-import { upvoteAnswer, downvoteAnswer } from '@/lib/actions/answer.action';
+import { downvoteAnswer, upvoteAnswer } from '@/lib/actions/answer.action';
 import { viewQuestion } from '@/lib/actions/interaction.action';
 import {
   downvoteQuestion,
@@ -10,7 +10,7 @@ import { saveQuestion } from '@/lib/actions/user.action';
 import { formatNumber } from '@/lib/utils';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 interface Props {
   type: string;
@@ -46,7 +46,7 @@ const Voting = ({
 
   const handleVote = async (action: string) => {
     if (!userId) {
-      router.push('/sign-in');
+      return;
     }
 
     if (action === 'upvote') {
@@ -67,7 +67,12 @@ const Voting = ({
           path: pathname,
         });
       }
-    } else if (action === 'downvote') {
+
+      // todo: show a toast
+      return;
+    }
+
+    if (action === 'downvote') {
       if (type === 'Question') {
         await downvoteQuestion({
           questionId: JSON.parse(itemId),
@@ -85,6 +90,8 @@ const Voting = ({
           path: pathname,
         });
       }
+
+      // todo: show a toast
     }
   };
 
@@ -96,7 +103,7 @@ const Voting = ({
   }, [itemId, userId, pathname, router]);
 
   return (
-    <div className="flex-center gap-5">
+    <div className="flex gap-5">
       <div className="flex-center gap-2.5">
         <div className="flex-center gap-1.5">
           <Image
@@ -111,12 +118,14 @@ const Voting = ({
             className="cursor-pointer"
             onClick={() => handleVote('upvote')}
           />
-          <div className="flex-center background-light700_dark400 min-h-[18px] min-w-[18px] rounded-sm p-1">
+
+          <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
             <p className="subtle-medium text-dark400_light900">
               {formatNumber(upvotes)}
             </p>
           </div>
         </div>
+
         <div className="flex-center gap-1.5">
           <Image
             src={
@@ -130,28 +139,29 @@ const Voting = ({
             className="cursor-pointer"
             onClick={() => handleVote('downvote')}
           />
-          <div className="flex-center background-light700_dark400 min-h-[18px] min-w-[18px] rounded-sm p-1">
+
+          <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
             <p className="subtle-medium text-dark400_light900">
               {formatNumber(downvotes)}
             </p>
           </div>
         </div>
-
-        {type === 'Question' && (
-          <Image
-            src={
-              hasSaved
-                ? '/assets/icons/star-filled.svg'
-                : '/assets/icons/star-red.svg'
-            }
-            width={18}
-            height={18}
-            alt="star"
-            className="cursor-pointer"
-            onClick={() => handleSave()}
-          />
-        )}
       </div>
+
+      {type === 'Question' && (
+        <Image
+          src={
+            hasSaved
+              ? '/assets/icons/star-filled.svg'
+              : '/assets/icons/star-red.svg'
+          }
+          width={18}
+          height={18}
+          alt="star"
+          className="cursor-pointer"
+          onClick={handleSave}
+        />
+      )}
     </div>
   );
 };
