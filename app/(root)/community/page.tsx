@@ -5,9 +5,12 @@ import UserCard from '@/components/shared/cards/UserCard';
 import React from 'react';
 import { getAllUsers } from '@/lib/actions/user.action';
 import Link from 'next/link';
+import { SearchParamsProps } from '@/types';
 
-const Page = async () => {
-  const result = await getAllUsers({});
+const Page = async ({ searchParams }: SearchParamsProps) => {
+  const result = await getAllUsers({
+    searchQuery: searchParams.q,
+  });
 
   return (
     <>

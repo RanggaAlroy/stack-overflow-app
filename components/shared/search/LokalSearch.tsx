@@ -1,47 +1,86 @@
 'use client';
-import React from 'react';
+
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
-
-// we need to use this Lokal search component for other pages as well
-// so we need to make it reusable by passing props and interface
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { formUrlQuery, removeKeysFromQuery } from '@/lib/utils';
 
 interface CustomInputProps {
   route: string;
   iconPosition: string;
   imgSrc: string;
   placeholder: string;
-  otherClasses?: string; // '?' stand for 'optional'
+  otherClasses?: string;
 }
 
-const LokalSearch = ({
+const LocalSearch = ({
   route,
   iconPosition,
   imgSrc,
   placeholder,
   otherClasses,
 }: CustomInputProps) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const query = searchParams.get('q');
+
+  const [search, setSearch] = useState(query || '');
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (search) {
+        const newUrl = formUrlQuery({
+          params: searchParams.toString(),
+          key: 'q',
+          value: search,
+        });
+
+        router.push(newUrl, { scroll: false });
+      } else {
+        console.log(route, pathname);
+        if (pathname === route) {
+          const newUrl = removeKeysFromQuery({
+            params: searchParams.toString(),
+            keysToRemove: ['q'],
+          });
+
+          router.push(newUrl, { scroll: false });
+        }
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [search, route, pathname, router, searchParams, query]);
+
   return (
     <div
-      className={`background-light800_darkgradient flex min-h-[56px] flex-1 grow items-center gap-4 rounded-[10px] px-4 ${otherClasses}`}
+      className={`background-light800_darkgradient flex min-h-[56px] grow items-center gap-4 rounded-[10px] px-4 ${otherClasses}`}
     >
-      <Image
-        src={imgSrc}
-        alt="search_icon"
-        width={24}
-        height={24}
-        className="cursor-pointer"
-      />
+      {iconPosition === 'left' && (
+        <Image
+          src={imgSrc}
+          alt="search icon"
+          width={24}
+          height={24}
+          className="cursor-pointer"
+        />
+      )}
+
       <Input
+        type="text"
         placeholder={placeholder}
-        onClick={() => {}}
-        className="paragraph-regular no-focus placeholder w-full border-none bg-transparent shadow-none outline-none"
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        className="paragraph-regular no-focus placeholder background-light800_darkgradient border-none shadow-none outline-none"
       />
 
       {iconPosition === 'right' && (
         <Image
           src={imgSrc}
-          alt="search_icon"
+          alt="search icon"
           width={24}
           height={24}
           className="cursor-pointer"
@@ -51,4 +90,4 @@ const LokalSearch = ({
   );
 };
 
-export default LokalSearch;
+export default LocalSearch;

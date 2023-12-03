@@ -20,7 +20,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
 
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col">
         <LokalSearch
-          route={'/'}
+          route={`/tags/${params.id}`}
           iconPosition={'left'}
           imgSrc={'/assets/icons/search.svg'}
           placeholder={'Search questions'}

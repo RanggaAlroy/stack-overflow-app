@@ -8,9 +8,12 @@ import NoResultFound from '@/components/shared/NoResultFound';
 import QuestionCard from '@/components/shared/cards/QuestionCard';
 import { getQuestions } from '@/lib/actions/question.action';
 import Link from 'next/link';
+import { SearchParamsProps } from '@/types';
 
-export default async function Home() {
-  const result = await getQuestions({});
+export default async function Home({ searchParams }: SearchParamsProps) {
+  const result = await getQuestions({
+    searchQuery: searchParams.q,
+  });
 
   return (
     <>
@@ -25,11 +28,11 @@ export default async function Home() {
         </div>
         <div className="mt-11 flex justify-between gap-5 max-sm:flex-col">
           <LokalSearch
-            route={'/'}
-            iconPosition={'left'}
-            imgSrc={'/assets/icons/search.svg'}
-            placeholder={'Search Anything Lokaly'}
-            otherClasses={'flex-1'}
+            route="/"
+            iconPosition="left"
+            imgSrc="/assets/icons/search.svg"
+            placeholder="Search Anything Lokaly"
+            otherClasses="flex-1"
           />
           <Filter
             filters={HomePageFilters}
