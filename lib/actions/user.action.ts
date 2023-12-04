@@ -271,7 +271,7 @@ export async function getUserQuestions(params: GetUserStatsParams) {
   try {
     connectToDatabase();
 
-    const { userId, page = 1, pageSize = 10,} = params;
+    const { userId, page = 1, pageSize = 4} = params;
 
     const skipAmount = (page - 1) * pageSize;
 
@@ -302,17 +302,23 @@ export async function getUserAnswers(params: GetUserStatsParams) {
   try {
     connectToDatabase();
 
-    const { userId, page = 1, pageSize = 10,} = params;
+    const { userId, page = 1, pageSize = 10} = params;
+
+    const skipAmount = (page - 1) * pageSize;
 
     const totalAnswers = await Answer.countDocuments({ author: userId });
 
     const userAnswers = await Answer.find({ author: userId })
+    .skip(skipAmount)
+    .limit(pageSize)
     .sort({ upvotes: -1})
     .populate('question', '_id title')
     .populate('author', '_id name clerkId picture')
 
+    const isNextAnswer = totalAnswers > skipAmount + userAnswers.length;
 
-    return {totalAnswers, answers: userAnswers};
+
+    return {totalAnswers, answers: userAnswers, isNext: isNextAnswer};
     
   } catch (error) {
     console.log(error);
