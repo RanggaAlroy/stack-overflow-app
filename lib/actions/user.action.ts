@@ -91,7 +91,7 @@ export async function getAllUsers(params: GetAllUsersParams) {
   try {
     connectToDatabase();
 
-    const {page = 1, pageSize = 20, searchQuery, filter} = params;
+    const {searchQuery, filter} = params;
 
     const query: FilterQuery<typeof User> = {};
 
@@ -102,7 +102,23 @@ export async function getAllUsers(params: GetAllUsersParams) {
       ]
       } 
 
-    const users = await User.find(query).sort({ createdAt: -1 })
+    let shortOptions = {};
+
+    switch (filter) {
+      case 'new_users':
+        shortOptions = { joinedAt: -1 };
+        break;
+      case 'old_users':
+        shortOptions = { joinedAt: 1 };
+        break;
+      case 'top_contributors':
+        shortOptions = { reputation: -1 };
+        break;
+      default:
+        break;
+    }
+
+    const users = await User.find(query).sort(shortOptions);
 
     return { users };
     
@@ -151,17 +167,41 @@ export async function getSavedQuestion(params: GetSavedQuestionsParams) {
     
     connectToDatabase();
 
-    const { clerkId, searchQuery  } = params;
+    const { clerkId, searchQuery, filter  } = params;
 
     const query: FilterQuery<typeof Question> = searchQuery 
     ? {title: { $regex: new RegExp(searchQuery, 'i') }} 
     : {}
 
+    let shortOptions = {};
+
+    switch (filter) {
+      case 'most_recent':
+        shortOptions = { createdAt: -1 };
+        break;
+      case 'oldest':
+        shortOptions = { createdAt: 1 };
+        break;
+      case 'most_voted':
+        shortOptions = { upvotes: -1 };
+        break;
+      case 'most_viewed':
+        shortOptions = { views: -1 };
+        break;
+      case 'least_answered':
+        shortOptions = { answers: 1 };
+        break;
+      default:
+        break;
+
+    }
+    
+
     const user = await User.findOne({ clerkId, query }).populate({
       path: 'saved',
       match: query,
       options: {
-      sort: { createdAt: -1 },
+      sort: shortOptions,
       },
       populate: [
         { path: 'tags', model: Tag, select: '_id name'},

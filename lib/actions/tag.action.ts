@@ -35,7 +35,7 @@ export async function getAllTags(params: GetAllTagsParams) {
 
     connectToDatabase();
 
-    const { searchQuery } = params;
+    const { searchQuery, filter } = params;
 
     const query: FilterQuery<typeof Tag> = {};
 
@@ -46,8 +46,28 @@ export async function getAllTags(params: GetAllTagsParams) {
       ]
     }
 
+    let shortOptions = {};
 
-    const tags = await Tag.find(query)
+    switch (filter) {
+      case "popular":
+        shortOptions = { questions: -1 };
+        break;
+      case "recent":
+        shortOptions = { createdOn: -1 };
+        break;
+      case "name":
+        shortOptions = { name: 1 };
+        break;
+      case "old":
+        shortOptions = { createdOn: 1 };
+        break;
+    
+      default:
+        break;
+    }
+
+
+    const tags = await Tag.find(query).sort(shortOptions);
 
     return { tags }
     
