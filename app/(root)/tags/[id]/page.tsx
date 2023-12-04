@@ -6,12 +6,13 @@ import { getQuestionByTagId } from '@/lib/actions/tag.action';
 import React from 'react';
 import Filter from '@/components/shared/Filter';
 import { URLProps } from '@/types';
+import Pagination from '@/components/shared/Pagination';
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const result = await getQuestionByTagId({
     tagId: params.id,
-    page: 1,
     searchQuery: searchParams.q,
+    page: searchParams.page ? +searchParams.page : 1,
   });
 
   return (
@@ -55,6 +56,12 @@ const Page = async ({ params, searchParams }: URLProps) => {
             linkTitle="Ask a Question"
           />
         )}
+      </div>
+      <div className="mt-10">
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result.isNext}
+        />
       </div>
     </>
   );

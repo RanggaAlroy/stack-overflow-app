@@ -8,6 +8,7 @@ import Question from "@/database/question.model";
 import Tag from "@/database/tag.model";
 import { FilterQuery } from "mongoose";
 import Answer from "@/database/answer.model";
+import { skip } from "node:test";
 
 
 export async function getUserById(params: any) {
@@ -91,9 +92,11 @@ export async function getAllUsers(params: GetAllUsersParams) {
   try {
     connectToDatabase();
 
-    const {searchQuery, filter} = params;
+    const {searchQuery, filter, page = 1, pageSize = 10} = params;
 
     const query: FilterQuery<typeof User> = {};
+
+    const skipAmount = (page - 1) * pageSize;
 
     if(searchQuery) {
       query.$or = [
@@ -118,9 +121,16 @@ export async function getAllUsers(params: GetAllUsersParams) {
         break;
     }
 
-    const users = await User.find(query).sort(shortOptions);
+    const users = await User.find(query)
+     .skip(skipAmount)
+     .limit(pageSize)  
+     .sort(shortOptions);
 
-    return { users };
+     const totalUsers = await User.countDocuments(query);
+
+     const isNext = totalUsers > skipAmount + users.length;
+
+    return { users, isNext };
     
   } catch (error) {
     console.log(error);
@@ -167,7 +177,9 @@ export async function getSavedQuestion(params: GetSavedQuestionsParams) {
     
     connectToDatabase();
 
-    const { clerkId, searchQuery, filter  } = params;
+    const { clerkId, searchQuery, filter, page = 1, pageSize = 2  } = params;
+
+    const skipAmount = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof Question> = searchQuery 
     ? {title: { $regex: new RegExp(searchQuery, 'i') }} 
@@ -188,8 +200,8 @@ export async function getSavedQuestion(params: GetSavedQuestionsParams) {
       case 'most_viewed':
         shortOptions = { views: -1 };
         break;
-      case 'least_answered':
-        shortOptions = { answers: 1 };
+      case 'most_answered':
+        shortOptions = { answers: -1 };
         break;
       default:
         break;
@@ -197,17 +209,23 @@ export async function getSavedQuestion(params: GetSavedQuestionsParams) {
     }
     
 
-    const user = await User.findOne({ clerkId, query }).populate({
-      path: 'saved',
-      match: query,
-      options: {
-      sort: shortOptions,
-      },
-      populate: [
+    const user = await User.findOne({ clerkId }) 
+    .populate({
+        path: 'saved',
+        match: query,
+        options: {
+        sort: shortOptions,
+        skip: skipAmount,
+        limit: pageSize + 1,
+        },
+        populate: [
         { path: 'tags', model: Tag, select: '_id name'},
         { path: 'author', model: User, select: '_id name clerkId picture'}
-      ] 
-    })
+        ] 
+       })
+    
+    
+       const isNext = user.saved.length > pageSize;
 
     if(!user) {
       throw new Error('User not found');
@@ -215,7 +233,7 @@ export async function getSavedQuestion(params: GetSavedQuestionsParams) {
 
     const savedQuestions = user.saved;
 
-    return  { questions: savedQuestions };
+    return  { questions: savedQuestions, isNext };
 
     
   } catch (error) {
@@ -255,14 +273,22 @@ export async function getUserQuestions(params: GetUserStatsParams) {
 
     const { userId, page = 1, pageSize = 10,} = params;
 
+    const skipAmount = (page - 1) * pageSize;
+
     const totalQuestion = await Question.countDocuments({ author: userId });
 
     const userQuestions = await Question.find({ author: userId })
+    .skip(skipAmount)
+    .limit(pageSize)
     .sort({ views: -1, upvotes: -1})
     .populate('tags', '_id name')
     .populate('author', '_id name clerkId picture')
 
-    return {totalQuestion, questions: userQuestions};
+    const totalQuestions = await Question.countDocuments({ author: userId });
+
+    const isNextQuestion = totalQuestions > skipAmount + userQuestions.length;
+
+    return {totalQuestion, questions: userQuestions, isNext: isNextQuestion};
  
 
   } catch (error) {
