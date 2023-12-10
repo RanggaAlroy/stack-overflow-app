@@ -17,7 +17,7 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
 
     if (!user) throw new Error("User not found");
 
-    // find interactions for thes user and group by tags
+    // find interactions for these user and group by tags
     // iteractions...
 
 

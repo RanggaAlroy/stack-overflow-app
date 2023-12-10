@@ -6,6 +6,7 @@ import { connectToDatabase } from "../mongoose"
 import { AnswerVoteParams, CreateAnswerParams, DeleteAnswerParams, GetAnswersParams } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Interaction from "@/database/interaction.model";
+import User from "@/database/user.model";
 
 export async function createAnswer(params: CreateAnswerParams) {
     try {
@@ -24,11 +25,22 @@ export async function createAnswer(params: CreateAnswerParams) {
 
         // Add the answer to the question
 
-        await Question.findByIdAndUpdate(question, {
+        const questionObject = await Question.findByIdAndUpdate(question, {
             $push: { answers: newAnswer._id }
         });
 
-        // TODO: add the answer to the answers array
+        await Interaction.create({
+            user: author,
+            action: 'answer',
+            question,
+            answer: newAnswer._id,
+            tags: questionObject.tags
+        });
+
+        await User.findByIdAndUpdate(author, {
+            $inc: {reputation: 10 }
+        })
+
 
         revalidatePath(path);
 
@@ -107,6 +119,15 @@ export async function upvoteAnswer(params: AnswerVoteParams) {
             throw new Error('Answer not found');
         }
 
+        // increment author's reputation by +1/-1 for upvoting/revoking an upvote to the answer
+        await User.findByIdAndUpdate(userId, {
+            $inc: { reputation: hasupVoted ? -2 : 2 }
+        })
+        
+        await User.findByIdAndUpdate(answer.author, {
+            $inc: { reputation: hasupVoted ? -10 : 10 }
+        })
+
         revalidatePath(path);
         
     } catch (error) {
@@ -140,6 +161,15 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
         if(!answer) {
             throw new Error('Answer not found');
         }
+
+           // increment author's reputation by +1/-1 for downvoted an upvote to the answer
+           await User.findByIdAndUpdate(userId, {
+            $inc: { reputation: hasdownVoted ? -2 : 2 }
+        })
+        
+        await User.findByIdAndUpdate(answer.author, {
+            $inc: { reputation: hasdownVoted ? -10 : 10 }
+        })
 
         revalidatePath(path);
         
