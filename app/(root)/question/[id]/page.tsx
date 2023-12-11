@@ -1,20 +1,20 @@
-import { getQuestionById } from '@/lib/actions/question.action';
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import Answer from '@/components/forms/Answer';
+import AllAnswers from '@/components/shared/AllAnswers';
 import Metric from '@/components/shared/Metric';
-import { formatNumber, getTimeStamp } from '@/lib/utils';
 import ParseHTML from '@/components/shared/ParseHTML';
 import RenderTag from '@/components/shared/RenderTag';
-import Answer from '@/components/forms/Answer';
-import { auth } from '@clerk/nextjs';
-import { getUserById } from '@/lib/actions/user.action';
-import AllAnswers from '@/components/shared/AllAnswers';
 import Voting from '@/components/shared/Voting';
-import { URLProps } from '@/types';
 
-const page = async ({ params, searchParams }: URLProps) => {
-  const result = await getQuestionById({ questionId: params.id });
+import { getQuestionById } from '@/lib/actions/question.action';
+import { getUserById } from '@/lib/actions/user.action';
+import { formatNumber, getTimeStamp } from '@/lib/utils';
+import { URLProps } from '@/types';
+import { auth } from '@clerk/nextjs';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+
+const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();
 
   let mongoUser;
@@ -22,6 +22,8 @@ const page = async ({ params, searchParams }: URLProps) => {
   if (clerkId) {
     mongoUser = await getUserById({ userId: clerkId });
   }
+
+  const result = await getQuestionById({ questionId: params.id });
 
   return (
     <>
@@ -33,10 +35,10 @@ const page = async ({ params, searchParams }: URLProps) => {
           >
             <Image
               src={result.author.picture}
+              className="rounded-full"
               width={22}
               height={22}
               alt="profile"
-              className="rounded-full"
             />
             <p className="paragraph-semibold text-dark300_light700">
               {result.author.name}
@@ -59,38 +61,39 @@ const page = async ({ params, searchParams }: URLProps) => {
           {result.title}
         </h2>
       </div>
-      <div className="flex-start mb-8 mt-5 flex w-full items-center gap-4">
+
+      <div className="mb-8 mt-5 flex flex-wrap gap-4">
         <Metric
           imgURL="/assets/icons/clock.svg"
           alt="clock icon"
           value={` asked ${getTimeStamp(result.createdAt)}`}
           title=" Asked"
-          textStyles="small-regular text-dark400_light800"
+          textStyles="small-medium text-dark400_light800"
         />
         <Metric
           imgURL="/assets/icons/message.svg"
-          alt="Views"
+          alt="message"
           value={formatNumber(result.answers.length)}
-          title="Answers"
-          textStyles="small-regular text-dark400_light800"
+          title=" Answers"
+          textStyles="small-medium text-dark400_light800"
         />
         <Metric
           imgURL="/assets/icons/eye.svg"
-          alt="Answers"
+          alt="eye"
           value={formatNumber(result.views)}
-          title="Views"
-          textStyles="small-regular text-dark400_light800"
+          title=" Views"
+          textStyles="small-medium text-dark400_light800"
         />
       </div>
 
       <ParseHTML data={result.content} />
 
-      <div className="mb-8 mt-10 flex gap-2">
+      <div className="mt-8 flex flex-wrap gap-2">
         {result.tags.map((tag: any) => (
           <RenderTag
+            key={tag._id}
             _id={tag._id}
             name={tag.name}
-            key={tag._id}
             showCount={false}
           />
         ))}
@@ -113,4 +116,4 @@ const page = async ({ params, searchParams }: URLProps) => {
   );
 };
 
-export default page;
+export default Page;
