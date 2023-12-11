@@ -77,7 +77,7 @@ const Profile = ({ clerkId, user }: Props) => {
           name="name"
           render={({ field }) => (
             <FormItem className="space-y-3.5">
-              <FormLabel>
+              <FormLabel className="paragraph-semibold text-dark400_light800">
                 Name<span className="text-primary-500"> *</span>
               </FormLabel>
               <FormControl>
@@ -97,7 +97,7 @@ const Profile = ({ clerkId, user }: Props) => {
           name="username"
           render={({ field }) => (
             <FormItem className="space-y-3.5">
-              <FormLabel>
+              <FormLabel className="paragraph-semibold text-dark400_light800">
                 Username<span className="text-primary-500"> *</span>
               </FormLabel>
               <FormControl>
@@ -117,7 +117,9 @@ const Profile = ({ clerkId, user }: Props) => {
           name="portfolio"
           render={({ field }) => (
             <FormItem className="space-y-3.5">
-              <FormLabel>Portfolio Link</FormLabel>
+              <FormLabel className="paragraph-semibold text-dark400_light800">
+                Portfolio Link
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter your portfoilo link"
@@ -135,7 +137,7 @@ const Profile = ({ clerkId, user }: Props) => {
           name="location"
           render={({ field }) => (
             <FormItem className="space-y-3.5">
-              <FormLabel>
+              <FormLabel className="paragraph-semibold text-dark400_light800">
                 Location<span className="text-primary-500"> *</span>
               </FormLabel>
               <FormControl>
@@ -155,7 +157,7 @@ const Profile = ({ clerkId, user }: Props) => {
           name="bio"
           render={({ field }) => (
             <FormItem className="space-y-3.5">
-              <FormLabel>
+              <FormLabel className="paragraph-semibold text-dark400_light800">
                 Bio<span className="text-primary-500"> *</span>
               </FormLabel>
               <FormControl>
