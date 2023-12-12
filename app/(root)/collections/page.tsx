@@ -11,6 +11,13 @@ import { auth } from '@clerk/nextjs';
 import { SearchParamsProps } from '@/types';
 import Pagination from '@/components/shared/Pagination';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Collections | Dev Overflow',
+  description: 'Stack overflow clone made with Next.js and MongoDB',
+};
+
 export default async function Home({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
 

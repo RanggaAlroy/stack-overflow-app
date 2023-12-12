@@ -8,6 +8,13 @@ import Link from 'next/link';
 import { SearchParamsProps } from '@/types';
 import Pagination from '@/components/shared/Pagination';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Community | Dev Overflow',
+  description: 'Stack overflow clone made with Next.js and MongoDB',
+};
+
 const Page = async ({ searchParams }: SearchParamsProps) => {
   const result = await getAllUsers({
     searchQuery: searchParams.q,
